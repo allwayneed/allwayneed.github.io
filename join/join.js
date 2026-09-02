@@ -29,10 +29,10 @@ document.getElementById("join-form").addEventListener("submit", async (e) => {
     resultEl.classList.remove("hidden");
 
     if (found) {
-      resultEl.innerHTML = `<p>✅ スレッド「${escapeHtml(found.name)}」が見つかりました！移動します...</p>`;
+      resultEl.innerHTML = `<p>✅ チャット「${escapeHtml(found.name)}」が見つかりました！移動します...</p>`;
       window.location.href = `/chat/${found.uuid}/?code=${encodeURIComponent(code)}`;
     } else {
-      resultEl.innerHTML = `<p style="color: var(--danger);">❌ 招待コードに一致するスレッドが見つかりませんでした。</p>`;
+      resultEl.innerHTML = `<p style="color: var(--danger);">❌ 招待コードに一致するチャットが見つかりませんでした。</p>`;
       submitBtn.disabled = false;
       submitBtn.textContent = "参加する";
     }
