@@ -46,6 +46,11 @@ async function init() {
 
   currentRoom = uuid;
   currentInviteCode = code;
+
+  // 名前欄に前回の名前を復元
+  const savedName = localStorage.getItem("anon-name");
+  if (savedName) document.getElementById("chat-name").value = savedName;
+
   openRoom(uuid, code);
 }
 
@@ -75,7 +80,7 @@ async function openRoom(uuid, inviteCode) {
       ...(room.hashtags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`),
       room.visibility === "private"
         ? '<span style="color: var(--danger);">🔒 Private</span>'
-        : '<span style="color: var(--accent);">🌐 Public</span>',
+        : '<span style="color: var(--text-muted);">🌐 Public</span>',
     ];
     document.getElementById("chat-meta").innerHTML = metaParts.join(" ");
 
@@ -83,7 +88,7 @@ async function openRoom(uuid, inviteCode) {
     if (inviteCode) shareUrl += `?code=${encodeURIComponent(inviteCode)}`;
     document.getElementById("chat-share").innerHTML = `
       <span class="share-box">
-        🔗 <input type="text" value="${shareUrl}" readonly class="share-input" onclick="this.select()">
+        <input type="text" value="${shareUrl}" readonly class="share-input" onclick="this.select()">
         <button class="copy-btn" onclick="copyToClipboard('${shareUrl}')">コピー</button>
       </span>
     `;
@@ -106,13 +111,17 @@ function renderMessages(messages) {
   }
   el.innerHTML = messages
     .map(
-      (m) => `
-      <div class="message">
-        <div class="msg-name">${escapeHtml(m.name)}</div>
-        <div class="msg-content">${escapeHtml(m.content)}</div>
-        <div class="msg-time">${formatTime(m.timestamp)}</div>
-      </div>
-    `
+      (m) => {
+        const displayName = m.name || "無名A";
+        const id = m.userId || "ID:??????";
+        return `
+        <div class="message">
+          <div class="msg-name">${escapeHtml(displayName)} <span class="msg-id">${escapeHtml(id)}</span></div>
+          <div class="msg-content">${escapeHtml(m.content)}</div>
+          <div class="msg-time">${formatTime(m.timestamp)}</div>
+        </div>
+      `;
+      }
     )
     .join("");
   el.scrollTop = el.scrollHeight;
@@ -139,9 +148,14 @@ document.getElementById("chat-input").addEventListener("keydown", (e) => {
 });
 
 async function sendMessage() {
-  const name = document.getElementById("chat-name").value.trim() || "名無し";
+  const name = document.getElementById("chat-name").value.trim() || "無名A";
   const content = document.getElementById("chat-input").value.trim();
   if (!content || !currentRoom) return;
+
+  // 名前を保存
+  localStorage.setItem("anon-name", name);
+
+  const userId = getUserId();
 
   const btn = document.getElementById("chat-send");
   btn.disabled = true;
@@ -153,7 +167,7 @@ async function sendMessage() {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, content }),
+      body: JSON.stringify({ name, content, id: userId }),
     });
     const data = await res.json();
     if (res.ok) {

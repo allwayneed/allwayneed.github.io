@@ -39,6 +39,16 @@ function messageCount(room) {
   return room.messages ? room.messages.length : 0;
 }
 
+// ─── ユーザーID（ブラウザに保存、1人1ID） ───
+function getUserId() {
+  let id = localStorage.getItem("anon-user-id");
+  if (!id) {
+    id = "ID:" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    localStorage.setItem("anon-user-id", id);
+  }
+  return id;
+}
+
 // ─── 遊び心: ランダムタグライン ───
 const TAGLINES = [
   "匿名だから正直になれる場所",
