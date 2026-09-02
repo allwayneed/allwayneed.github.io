@@ -498,3 +498,71 @@ textarea {
   color: var(--primary);
   text-decoration: underline;
 }
+
+/* ─── Header row (title + badge) ─── */
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.header-row h1 {
+  margin-bottom: 0;
+}
+
+/* ─── Tagline ─── */
+.tagline {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  transition: opacity 0.3s;
+  min-height: 1.2em;
+}
+
+/* ─── Footer ─── */
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+footer #footer-wisdom {
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+footer .footer-meta {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* ─── Room card fade-in ─── */
+.room-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Message fade-in ─── */
+.message {
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* ─── Empty state links ─── */
+.empty a {
+  color: var(--primary);
+  text-decoration: underline;
+}

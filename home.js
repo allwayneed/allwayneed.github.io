@@ -1,8 +1,8 @@
-// ─── Room list page ───
+// ─── Thread list page (スレッド一覧) ───
 
 async function loadRooms() {
   const listEl = document.getElementById("room-list");
-  listEl.innerHTML = '<p class="loading">読み込み中...</p>';
+  listEl.innerHTML = '<p class="loading">スレッドを掘削中... ⛏️</p>';
 
   try {
     const res = await fetch(`${API_BASE}/api/rooms`);
@@ -24,7 +24,7 @@ async function loadRooms() {
     }
 
     if (rooms.length === 0) {
-      listEl.innerHTML = '<p class="empty">ルームがありません。「ルーム作成」から作ってみよう！</p>';
+      listEl.innerHTML = '<p class="empty">まだスレッドがない... 🌱<br>最初のスレッドを立ててみよう。</p>';
       return;
     }
 
@@ -37,8 +37,8 @@ async function loadRooms() {
           ? `<span class="room-genre private">🔒 Private</span>`
           : `<span class="room-genre">${escapeHtml(room.genre)}</span>`;
 
-        // プライベートルームは招待コード入力を促すリンク先(/join/)、パブリックは直接 /chat/<uuid>/ へ本物のリンク
         const href = room.visibility === "private" ? "/join/" : `/chat/${room.uuid}/`;
+        const msgCount = messageCount(room);
 
         return `
           <a href="${href}" class="room-card" data-uuid="${room.uuid}">
@@ -49,13 +49,14 @@ async function loadRooms() {
             <div class="room-meta">
               <span>🔗 <code>/chat/${room.uuid}/</code></span>
               <span>📅 ${formatDate(room.created_at)}</span>
+              ${msgCount > 0 ? `<span>💬 ${msgCount} 件</span>` : `<span>📭 新規</span>`}
             </div>
           </a>
         `;
       })
       .join("");
   } catch (err) {
-    listEl.innerHTML = `<p class="empty">エラーが発生しました: ${escapeHtml(String(err))}</p>`;
+    listEl.innerHTML = `<p class="empty">サーバーと通信できない... 📡<br>${escapeHtml(String(err))}</p>`;
   }
 }
 
@@ -63,3 +64,5 @@ document.getElementById("search-input").addEventListener("input", loadRooms);
 document.getElementById("genre-filter").addEventListener("change", loadRooms);
 
 loadRooms();
+initTagline();
+initFooterWisdom();

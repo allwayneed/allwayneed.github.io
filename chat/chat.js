@@ -1,15 +1,10 @@
-// ─── Chat room page ───
-// UUID は /chat/<UUID>/ の形式で渡される。
-// GitHub Pages は実ディレクトリを事前生成できないため、
-// 存在しないパスは 404.html 経由でこのページ (/chat/) にリダイレクトされ、
-// sessionStorage 経由で元のパス（UUID）を受け取る。
+// ─── Chat page (スレッド内チャット) ───
 
 let currentRoom = null;
 let currentInviteCode = null;
 let pollTimer = null;
 
 function resolveUuidAndCode() {
-  // 404.html からのリダイレクト情報を優先
   const saved = sessionStorage.getItem('chat-redirect');
   let path, search;
 
@@ -23,12 +18,11 @@ function resolveUuidAndCode() {
     search = window.location.search.replace(/^\?/, '');
   }
 
-  const parts = path.split('/').filter(Boolean); // ["chat", "<uuid>"]
+  const parts = path.split('/').filter(Boolean);
   const uuid = parts.length >= 2 ? parts[1] : null;
   const params = new URLSearchParams(search);
   const code = params.get('code');
 
-  // URLバーを正しい /chat/<uuid>/ に復元
   if (uuid) {
     let correctUrl = `/chat/${uuid}/`;
     if (code) correctUrl += `?code=${encodeURIComponent(code)}`;
@@ -44,9 +38,9 @@ async function init() {
   const { uuid, code } = resolveUuidAndCode();
 
   if (!uuid) {
-    document.getElementById("chat-title").textContent = "ルームが見つかりません";
+    document.getElementById("chat-title").textContent = "スレッドが見つかりません";
     document.getElementById("chat-messages").innerHTML =
-      '<p class="empty">UUIDが指定されていません。<a href="/">ルーム一覧へ</a></p>';
+      '<p class="empty">UUIDが指定されていません。<a href="/">スレッド一覧へ</a></p>';
     return;
   }
 
@@ -67,7 +61,7 @@ async function openRoom(uuid, inviteCode) {
       document.getElementById("chat-title").textContent = "アクセスできません";
       document.getElementById("chat-messages").innerHTML = `
         <p class="empty">${escapeHtml(data.error || "エラーが発生しました")}<br>
-        <a href="/join/">招待コードで参加する</a> / <a href="/">ルーム一覧へ</a></p>
+        <a href="/join/">招待コードで参加する</a> / <a href="/">スレッド一覧へ</a></p>
       `;
       return;
     }
@@ -106,7 +100,7 @@ async function openRoom(uuid, inviteCode) {
 function renderMessages(messages) {
   const el = document.getElementById("chat-messages");
   if (!messages || messages.length === 0) {
-    el.innerHTML = '<p class="empty">メッセージがありません。最初のメッセージを送ろう！</p>';
+    el.innerHTML = '<p class="empty">まだ誰も書き込んでない。<br>最初のメッセージを送ろう！ ✍️</p>';
     return;
   }
   el.innerHTML = messages
@@ -144,7 +138,7 @@ document.getElementById("chat-input").addEventListener("keydown", (e) => {
 });
 
 async function sendMessage() {
-  const name = document.getElementById("chat-name").value.trim() || "anonymous";
+  const name = document.getElementById("chat-name").value.trim() || "名無し";
   const content = document.getElementById("chat-input").value.trim();
   if (!content || !currentRoom) return;
 

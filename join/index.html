@@ -3,24 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>招待コードで参加 - Chat Rooms</title>
+  <title>招待コードで参加 - 匿名スレッド</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
   <header>
-    <h1>💬 Chat Rooms</h1>
+    <div class="header-row">
+      <h1>💬 匿名スレッド</h1>
+    </div>
+    <p class="tagline" id="tagline">読み込み中...</p>
     <nav>
-      <a href="/" class="nav-btn">ルーム一覧</a>
-      <a href="/create/" class="nav-btn">ルーム作成</a>
+      <a href="/" class="nav-btn">スレッド一覧</a>
+      <a href="/create/" class="nav-btn">スレッド作成</a>
       <a href="/join/" class="nav-btn active">招待コードで参加</a>
     </nav>
   </header>
 
   <section class="page active">
     <div class="form-card">
-      <h2>招待コードで参加</h2>
-      <p class="hint">プライベートルームの招待コードを入力してください。</p>
+      <h2>🔑 招待コードで参加</h2>
+      <p class="hint">プライベートスレッドの招待コードを入力してください。</p>
       <form id="join-form">
         <label>
           <span class="label-text">招待コード</span>

@@ -1,4 +1,4 @@
-// ─── Create room page ───
+// ─── Create thread page (スレッド作成) ───
 
 document.getElementById("create-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -35,33 +35,33 @@ document.getElementById("create-form").addEventListener("submit", async (e) => {
       const roomUrl = `/chat/${data.room.uuid}/`;
 
       if (isPrivate && data.room.inviteCode) {
-        // 招待コードを一度表示してから遷移させる
         const resultEl = document.getElementById("create-result");
         resultEl.classList.remove("hidden");
         const fullUrl = `${roomUrl}?code=${data.room.inviteCode}`;
         resultEl.innerHTML = `
-          <p>✅ ルーム「${escapeHtml(data.room.name)}」を作成しました！</p>
+          <p>✅ スレッド「${escapeHtml(data.room.name)}」を作成しました！</p>
           <p class="hint">招待コード（参加者に共有してください）:</p>
           <div class="invite-code">${escapeHtml(data.room.inviteCode)}</div>
-          <p class="hint" style="margin-top:12px;">3秒後にルームへ移動します...</p>
+          <p class="hint" style="margin-top:12px;">3秒後にチャットへ移動します...</p>
         `;
-        submitBtn.textContent = "ルームを作成";
+        submitBtn.textContent = "スレッドを立てる";
         submitBtn.disabled = false;
         setTimeout(() => {
           window.location.href = fullUrl;
         }, 3000);
       } else {
-        // パブリックルームは即リダイレクト
         window.location.href = roomUrl;
       }
     } else {
       alert(data.error || "作成に失敗しました");
       submitBtn.disabled = false;
-      submitBtn.textContent = "ルームを作成";
+      submitBtn.textContent = "スレッドを立てる";
     }
   } catch (err) {
     alert("エラー: " + err);
     submitBtn.disabled = false;
-    submitBtn.textContent = "ルームを作成";
+    submitBtn.textContent = "スレッドを立てる";
   }
 });
+
+initTagline();

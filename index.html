@@ -3,23 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Rooms</title>
+  <title>匿名スレッド</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
   <header>
-    <h1>💬 Chat Rooms</h1>
+    <div class="header-row">
+      <h1>💬 匿名スレッド</h1>
+    </div>
+    <p class="tagline" id="tagline">読み込み中...</p>
     <nav>
-      <a href="/" class="nav-btn active">ルーム一覧</a>
-      <a href="/create/" class="nav-btn">ルーム作成</a>
+      <a href="/" class="nav-btn active">スレッド一覧</a>
+      <a href="/create/" class="nav-btn">スレッド作成</a>
       <a href="/join/" class="nav-btn">招待コードで参加</a>
     </nav>
   </header>
 
   <section class="page active">
     <div class="filters">
-      <input type="text" id="search-input" placeholder="🔍 ルーム名・ハッシュタグで検索..." class="search-input">
+      <input type="text" id="search-input" placeholder="🔍 スレッド名・ハッシュタグで検索..." class="search-input">
       <select id="genre-filter" class="genre-filter">
         <option value="">すべてのジャンル</option>
         <option value="general">general</option>
@@ -33,9 +36,14 @@
       </select>
     </div>
     <div id="room-list" class="room-list">
-      <p class="loading">読み込み中...</p>
+      <p class="loading">スレッドを掘削中...</p>
     </div>
   </section>
+
+  <footer>
+    <p id="footer-wisdom">...</p>
+    <p class="footer-meta">匿名・ログイン不要・BANなし・自己責任</p>
+  </footer>
 
   <script src="/common.js"></script>
   <script src="/home.js"></script>
