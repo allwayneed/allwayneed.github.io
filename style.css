@@ -180,6 +180,15 @@ nav {
   margin-top: 8px;
   font-size: 0.75rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.room-card .room-meta code {
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
 }
 
 /* ─── Forms ─── */
@@ -295,7 +304,7 @@ textarea {
   margin: 8px 0;
 }
 
-.result-box .copy-btn {
+.copy-btn {
   background: var(--surface-hover);
   color: var(--text);
   border: 1px solid var(--border);
@@ -303,10 +312,40 @@ textarea {
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.8rem;
+}
+
+.copy-btn:hover {
+  border-color: var(--primary);
+}
+
+/* ─── Share Box ─── */
+.share-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-top: 8px;
 }
 
-.result-box .copy-btn:hover {
+.share-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.share-input {
+  flex: 1;
+  background: var(--bg);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.share-input:focus {
+  outline: none;
   border-color: var(--primary);
 }
 
@@ -316,6 +355,7 @@ textarea {
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .btn-back {
@@ -333,6 +373,11 @@ textarea {
   background: var(--surface-hover);
 }
 
+.chat-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .chat-info h2 {
   font-size: 1.1rem;
 }
@@ -348,6 +393,10 @@ textarea {
 
 .chat-meta .tag {
   color: var(--accent);
+}
+
+.chat-share {
+  margin-top: 8px;
 }
 
 .chat-messages {
@@ -409,7 +458,7 @@ textarea {
 .hint {
   color: var(--text-muted);
   font-size: 0.85rem;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 /* ─── Empty state ─── */

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Rooms</title>
+  <script>
+    // ─── GitHub Pages SPA redirect trick ───
+    // GitHub Pages は存在しないパスに対して 404.html を返す
+    // ここで元のパスを保存して / にリダイレクトし、
+    // app.js 側で保存したパスを読み込んでルーティングする
+    (function() {
+      var path = window.location.pathname;
+      var search = window.location.search;
+
+      // すでにルートなら何もしない
+      if (path === '/' || path === '/index.html') {
+        window.location.replace('/');
+        return;
+      }
+
+      // パスとクエリを保存
+      sessionStorage.setItem('spa-redirect', path + search);
+
+      // ルートにリダイレクト
+      window.location.replace('/' + (search || ''));
+    })();
+  </script>
+</head>
+<body>
+  <p>リダイレクト中...</p>
+  <a href="/">Chat Rooms へ</a>
+</body>
+</html>

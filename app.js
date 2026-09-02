@@ -1,15 +1,93 @@
-// ─── Chat Room App ───
+// ─── Chat Room App with SPA Routing ───
 const API_BASE = "https://my-api.allwayneed.workers.dev";
 
 let currentRoom = null;
 let currentInviteCode = null;
 let pollTimer = null;
 
+// ─── SPA Routing ───
+// /chat/<UUID>/ → チャットルームを開く
+// /chat/<UUID>/?code=XXX → プライベートルームを開く
+// / → ルーム一覧
+// /create → ルーム作成
+// /join → 招待コード参加
+
+function parseRoute() {
+  // 404.html リダイレクトからのパスを確認
+  let path = sessionStorage.getItem('spa-redirect');
+  if (path) {
+    sessionStorage.removeItem('spa-redirect');
+  } else {
+    path = window.location.pathname + window.location.search;
+  }
+
+  // クリーンナップ
+  const cleanPath = path.split('?')[0].replace(/\/+/g, '/').replace(/\/$/, '');
+  const search = path.includes('?') ? path.split('?')[1] : '';
+  const params = new URLSearchParams(search);
+
+  return { path: cleanPath, params };
+}
+
+function getRouteInfo() {
+  const { path, params } = parseRoute();
+  const parts = path.split('/').filter(Boolean);
+
+  // /chat/<UUID>
+  if (parts.length >= 2 && parts[0] === 'chat') {
+    return {
+      page: 'chat',
+      uuid: parts[1],
+      code: params.get('code'),
+    };
+  }
+
+  // /create
+  if (parts[0] === 'create') return { page: 'create' };
+
+  // /join
+  if (parts[0] === 'join') return { page: 'join' };
+
+  // /
+  return { page: 'home' };
+}
+
+function navigateTo(page, uuid = null, code = null) {
+  let url = '/';
+
+  if (page === 'chat' && uuid) {
+    url = `/chat/${uuid}/`;
+    if (code) url += `?code=${encodeURIComponent(code)}`;
+  } else if (page === 'create') {
+    url = '/create/';
+  } else if (page === 'join') {
+    url = '/join/';
+  }
+
+  history.pushState({ page, uuid, code }, '', url);
+}
+
+function handleRoute() {
+  const route = getRouteInfo();
+
+  if (route.page === 'chat' && route.uuid) {
+    openRoom(route.uuid, route.code);
+  } else {
+    showPage(route.page);
+  }
+}
+
+// ブラウザの戻る/進むボタン対応
+window.addEventListener('popstate', () => {
+  if (pollTimer) clearInterval(pollTimer);
+  handleRoute();
+});
+
 // ─── Navigation ───
 const pages = ["home", "create", "join", "chat"];
 const navMap = { "nav-home": "home", "nav-create": "create", "nav-join": "join" };
 
-function showPage(pageName) {
+function showPage(pageName, pushState = true) {
   pages.forEach((p) => {
     document.getElementById(`page-${p}`).classList.toggle("active", p === pageName);
   });
@@ -21,13 +99,17 @@ function showPage(pageName) {
 
 document.querySelectorAll(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (navMap[btn.id]) showPage(navMap[btn.id]);
+    const page = navMap[btn.id];
+    if (!page) return;
+    if (pollTimer) clearInterval(pollTimer);
+    navigateTo(page);
+    showPage(page, false);
   });
 });
 
 document.getElementById("back-btn").addEventListener("click", () => {
   if (pollTimer) clearInterval(pollTimer);
-  showPage("home");
+  history.back();
 });
 
 // ─── Room List ───
@@ -40,7 +122,6 @@ async function loadRooms() {
     const data = await res.json();
     const allRooms = data.rooms || [];
 
-    // フィルター適用
     const searchTerm = document.getElementById("search-input").value.toLowerCase();
     const genreFilter = document.getElementById("genre-filter").value;
 
@@ -68,6 +149,9 @@ async function loadRooms() {
         const visibilityBadge = room.visibility === "private"
           ? `<span class="room-genre private">🔒 Private</span>`
           : `<span class="room-genre">${escapeHtml(room.genre)}</span>`;
+        const link = room.visibility === "private"
+          ? `/chat/${room.uuid}/`
+          : `/chat/${room.uuid}/`;
         return `
           <div class="room-card" data-uuid="${room.uuid}" data-visibility="${room.visibility}">
             <div class="room-name">${escapeHtml(room.name)}</div>
@@ -75,7 +159,7 @@ async function loadRooms() {
             <div class="room-tags">${tags}</div>
             <div class="room-desc">${escapeHtml(room.description || "")}</div>
             <div class="room-meta">
-              <span>💬 ${room.messages ? 0 : 0} messages</span>
+              <span>🔗 <code>${link}</code></span>
               <span>📅 ${formatDate(room.created_at)}</span>
             </div>
           </div>
@@ -83,15 +167,19 @@ async function loadRooms() {
       })
       .join("");
 
-    // クリックでルームを開く
     document.querySelectorAll(".room-card").forEach((card) => {
       card.addEventListener("click", () => {
         const uuid = card.dataset.uuid;
         const isPrivate = card.dataset.visibility === "private";
         if (isPrivate) {
           const code = prompt("プライベートルームです。招待コードを入力してください:");
-          if (code) openRoom(uuid, code.toUpperCase());
+          if (code) {
+            const upperCode = code.toUpperCase();
+            navigateTo("chat", uuid, upperCode);
+            openRoom(uuid, upperCode);
+          }
         } else {
+          navigateTo("chat", uuid);
           openRoom(uuid);
         }
       });
@@ -118,22 +206,33 @@ async function openRoom(uuid, inviteCode = null) {
 
     if (!res.ok) {
       alert(data.error || "ルームにアクセスできません");
+      showPage("home", false);
       return;
     }
 
     const room = data.room;
     document.getElementById("chat-title").textContent = room.name;
+
     const metaParts = [
       `<span class="tag">${escapeHtml(room.genre)}</span>`,
       ...(room.hashtags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`),
-      room.visibility === "private" ? '<span style="color: var(--danger);">🔒 Private</span>' : "",
-    ].filter(Boolean);
+      room.visibility === "private" ? '<span style="color: var(--danger);">🔒 Private</span>' : '<span style="color: var(--accent);">🌐 Public</span>',
+    ];
     document.getElementById("chat-meta").innerHTML = metaParts.join(" ");
 
-    renderMessages(room.messages || []);
-    showPage("chat");
+    // 共有URL表示
+    let shareUrl = `${window.location.origin}/chat/${uuid}/`;
+    if (inviteCode) shareUrl += `?code=${encodeURIComponent(inviteCode)}`;
+    document.getElementById("chat-share").innerHTML = `
+      <span class="share-box">
+        🔗 <input type="text" value="${shareUrl}" readonly class="share-input" onclick="this.select()">
+        <button class="copy-btn" onclick="copyToClipboard('${shareUrl}')">コピー</button>
+      </span>
+    `;
 
-    // ポーリング開始（5秒ごと）
+    renderMessages(room.messages || []);
+    showPage("chat", false);
+
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(() => pollMessages(uuid, inviteCode), 5000);
   } catch (err) {
@@ -245,22 +344,35 @@ document.getElementById("create-form").addEventListener("submit", async (e) => {
       const resultEl = document.getElementById("create-result");
       resultEl.classList.remove("hidden");
 
+      const roomUrl = `${window.location.origin}/chat/${data.room.uuid}/`;
+      let inviteUrl = roomUrl;
       if (isPrivate && data.room.inviteCode) {
+        inviteUrl = `${roomUrl}?code=${data.room.inviteCode}`;
         resultEl.innerHTML = `
           <p>✅ ルーム「${escapeHtml(data.room.name)}」を作成しました！</p>
           <p class="hint">招待コード（参加者に共有してください）:</p>
           <div class="invite-code">${escapeHtml(data.room.inviteCode)}</div>
-          <button class="copy-btn" onclick="copyToClipboard('${data.room.inviteCode}')">📋 コードをコピー</button>
+          <p class="hint" style="margin-top:12px;">🔗 共有URL:</p>
+          <div class="share-row">
+            <input type="text" value="${inviteUrl}" readonly class="share-input" onclick="this.select()">
+            <button class="copy-btn" onclick="copyToClipboard('${inviteUrl}')">コピー</button>
+          </div>
           <p class="hint" style="margin-top:8px;">UUID: <code>${data.room.uuid}</code></p>
+          <button class="btn-primary" style="margin-top:12px;" onclick="navigateTo('chat', '${data.room.uuid}', '${data.room.inviteCode}'); openRoom('${data.room.uuid}', '${data.room.inviteCode}');">ルームを開く</button>
         `;
       } else {
         resultEl.innerHTML = `
           <p>✅ ルーム「${escapeHtml(data.room.name)}」を作成しました！</p>
-          <p class="hint">UUID: <code>${data.room.uuid}</code></p>
+          <p class="hint" style="margin-top:8px;">🔗 共有URL:</p>
+          <div class="share-row">
+            <input type="text" value="${roomUrl}" readonly class="share-input" onclick="this.select()">
+            <button class="copy-btn" onclick="copyToClipboard('${roomUrl}')">コピー</button>
+          </div>
+          <p class="hint" style="margin-top:8px;">UUID: <code>${data.room.uuid}</code></p>
+          <button class="btn-primary" style="margin-top:12px;" onclick="navigateTo('chat', '${data.room.uuid}'); openRoom('${data.room.uuid}');">ルームを開く</button>
         `;
       }
 
-      // フォームリセット
       document.getElementById("create-form").reset();
     } else {
       alert(data.error || "作成に失敗しました");
@@ -276,21 +388,18 @@ document.getElementById("join-form").addEventListener("submit", async (e) => {
   const code = document.getElementById("join-code").value.trim().toUpperCase();
   if (!code) return;
 
-  // すべてのルーム（private含む）を取得してコードと照合
   try {
     const res = await fetch(`${API_BASE}/api/rooms?all=true`);
     const data = await res.json();
     const rooms = data.rooms || [];
 
-    // 招待コードでルームを探す — ただしAPIはコードを隠すので、
-    // 別アプローチ: 各プライベートルームにコードでアクセス試行
-    // 効率的ではないが、簡易実装として全ルームに試行
     let found = null;
     for (const room of rooms) {
       if (room.visibility !== "private") continue;
       const tryRes = await fetch(`${API_BASE}/api/rooms/${room.uuid}?code=${encodeURIComponent(code)}`);
       if (tryRes.ok) {
-        found = room;
+        const tryData = await tryRes.json();
+        found = tryData.room;
         break;
       }
     }
@@ -301,7 +410,7 @@ document.getElementById("join-form").addEventListener("submit", async (e) => {
       resultEl.classList.remove("hidden");
       resultEl.innerHTML = `
         <p>✅ ルーム「${escapeHtml(found.name)}」にアクセスできます！</p>
-        <button class="btn-primary" onclick="openRoom('${found.uuid}', '${code}')">ルームを開く</button>
+        <button class="btn-primary" onclick="navigateTo('chat', '${found.uuid}', '${code}'); openRoom('${found.uuid}', '${code}');">ルームを開く</button>
       `;
     } else {
       resultEl.classList.remove("hidden");
@@ -335,5 +444,5 @@ function copyToClipboard(text) {
   });
 }
 
-// ─── Init ───
-loadRooms();
+// ─── Init: handle route on page load ───
+handleRoute();
