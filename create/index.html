@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルーム作成 - Chat Rooms</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>💬 Chat Rooms</h1>
+    <nav>
+      <a href="/" class="nav-btn">ルーム一覧</a>
+      <a href="/create/" class="nav-btn active">ルーム作成</a>
+      <a href="/join/" class="nav-btn">招待コードで参加</a>
+    </nav>
+  </header>
+
+  <section class="page active">
+    <div class="form-card">
+      <h2>新規チャットルーム作成</h2>
+      <form id="create-form">
+        <label>
+          <span class="label-text">チャット名 <small>(必須)</small></span>
+          <input type="text" id="room-name" placeholder="例: プログラミング雑談" required>
+        </label>
+
+        <label>
+          <span class="label-text">ジャンル</span>
+          <select id="room-genre">
+            <option value="general">general</option>
+            <option value="tech">tech</option>
+            <option value="game">game</option>
+            <option value="music">music</option>
+            <option value="art">art</option>
+            <option value="study">study</option>
+            <option value="hobby">hobby</option>
+            <option value="other">other</option>
+          </select>
+        </label>
+
+        <label>
+          <span class="label-text">ハッシュタグ <small>(カンマ区切り)</small></span>
+          <input type="text" id="room-hashtags" placeholder="例: #プログラミング, #初心者">
+        </label>
+
+        <label>
+          <span class="label-text">概要</span>
+          <textarea id="room-description" placeholder="ルームの説明を入力..." rows="3"></textarea>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="room-private">
+          <span>プライベートルーム（招待コードが必要）</span>
+        </label>
+
+        <button type="submit" class="btn-primary" id="create-submit">ルームを作成</button>
+      </form>
+      <div id="create-result" class="result-box hidden"></div>
+    </div>
+  </section>
+
+  <script src="/common.js"></script>
+  <script src="/create/create.js"></script>
+</body>
+</html>

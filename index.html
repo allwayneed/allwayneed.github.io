@@ -4,22 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Rooms</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-  <!-- ─── ヘッダー ─── -->
   <header>
     <h1>💬 Chat Rooms</h1>
     <nav>
-      <button id="nav-home" class="nav-btn active">ルーム一覧</button>
-      <button id="nav-create" class="nav-btn">ルーム作成</button>
-      <button id="nav-join" class="nav-btn">招待コードで参加</button>
+      <a href="/" class="nav-btn active">ルーム一覧</a>
+      <a href="/create/" class="nav-btn">ルーム作成</a>
+      <a href="/join/" class="nav-btn">招待コードで参加</a>
     </nav>
   </header>
 
-  <!-- ─── ルーム一覧ページ ─── -->
-  <section id="page-home" class="page active">
+  <section class="page active">
     <div class="filters">
       <input type="text" id="search-input" placeholder="🔍 ルーム名・ハッシュタグで検索..." class="search-input">
       <select id="genre-filter" class="genre-filter">
@@ -39,85 +37,7 @@
     </div>
   </section>
 
-  <!-- ─── ルーム作成ページ ─── -->
-  <section id="page-create" class="page">
-    <div class="form-card">
-      <h2>新規チャットルーム作成</h2>
-      <form id="create-form">
-        <label>
-          <span class="label-text">チャット名 <small>(必須)</small></span>
-          <input type="text" id="room-name" placeholder="例: プログラミング雑談" required>
-        </label>
-
-        <label>
-          <span class="label-text">ジャンル</span>
-          <select id="room-genre">
-            <option value="general">general</option>
-            <option value="tech">tech</option>
-            <option value="game">game</option>
-            <option value="music">music</option>
-            <option value="art">art</option>
-            <option value="study">study</option>
-            <option value="hobby">hobby</option>
-            <option value="other">other</option>
-          </select>
-        </label>
-
-        <label>
-          <span class="label-text">ハッシュタグ <small>(カンマ区切り)</small></span>
-          <input type="text" id="room-hashtags" placeholder="例: #プログラミング, #初心者">
-        </label>
-
-        <label>
-          <span class="label-text">概要</span>
-          <textarea id="room-description" placeholder="ルームの説明を入力..." rows="3"></textarea>
-        </label>
-
-        <label class="checkbox-label">
-          <input type="checkbox" id="room-private">
-          <span>プライベートルーム（招待コードが必要）</span>
-        </label>
-
-        <button type="submit" class="btn-primary">ルームを作成</button>
-      </form>
-      <div id="create-result" class="result-box hidden"></div>
-    </div>
-  </section>
-
-  <!-- ─── 招待コード参加ページ ─── -->
-  <section id="page-join" class="page">
-    <div class="form-card">
-      <h2>招待コードで参加</h2>
-      <p class="hint">プライベートルームの招待コードを入力してください。</p>
-      <form id="join-form">
-        <label>
-          <span class="label-text">招待コード</span>
-          <input type="text" id="join-code" placeholder="例: AB3XK9MN" required style="text-transform: uppercase;">
-        </label>
-        <button type="submit" class="btn-primary">参加する</button>
-      </form>
-      <div id="join-result" class="result-box hidden"></div>
-    </div>
-  </section>
-
-  <!-- ─── チャットルームページ ─── -->
-  <section id="page-chat" class="page">
-    <div class="chat-header">
-      <button id="back-btn" class="btn-back">← 戻る</button>
-      <div class="chat-info">
-        <h2 id="chat-title"></h2>
-        <div id="chat-meta" class="chat-meta"></div>
-        <div id="chat-share" class="chat-share"></div>
-      </div>
-    </div>
-    <div id="chat-messages" class="chat-messages"></div>
-    <div class="chat-input-area">
-      <input type="text" id="chat-name" placeholder="名前" class="chat-name-input">
-      <input type="text" id="chat-input" placeholder="メッセージを入力..." class="chat-text-input">
-      <button id="chat-send" class="btn-primary">送信</button>
-    </div>
-  </section>
-
-  <script src="app.js"></script>
+  <script src="/common.js"></script>
+  <script src="/home.js"></script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>招待コードで参加 - Chat Rooms</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>💬 Chat Rooms</h1>
+    <nav>
+      <a href="/" class="nav-btn">ルーム一覧</a>
+      <a href="/create/" class="nav-btn">ルーム作成</a>
+      <a href="/join/" class="nav-btn active">招待コードで参加</a>
+    </nav>
+  </header>
+
+  <section class="page active">
+    <div class="form-card">
+      <h2>招待コードで参加</h2>
+      <p class="hint">プライベートルームの招待コードを入力してください。</p>
+      <form id="join-form">
+        <label>
+          <span class="label-text">招待コード</span>
+          <input type="text" id="join-code" placeholder="例: AB3XK9MN" required style="text-transform: uppercase;">
+        </label>
+        <button type="submit" class="btn-primary" id="join-submit">参加する</button>
+      </form>
+      <div id="join-result" class="result-box hidden"></div>
+    </div>
+  </section>
+
+  <script src="/common.js"></script>
+  <script src="/join/join.js"></script>
+</body>
+</html>

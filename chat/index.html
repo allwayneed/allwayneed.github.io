@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room - Chat Rooms</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <section class="page active">
+    <div class="chat-header">
+      <a href="/" class="btn-back">← 戻る</a>
+      <div class="chat-info">
+        <h2 id="chat-title">読み込み中...</h2>
+        <div id="chat-meta" class="chat-meta"></div>
+        <div id="chat-share" class="chat-share"></div>
+      </div>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-name" placeholder="名前" class="chat-name-input">
+      <input type="text" id="chat-input" placeholder="メッセージを入力..." class="chat-text-input">
+      <button id="chat-send" class="btn-primary">送信</button>
+    </div>
+  </section>
+
+  <script src="/common.js"></script>
+  <script src="/chat/chat.js"></script>
+</body>
+</html>

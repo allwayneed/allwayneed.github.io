@@ -4,25 +4,21 @@
   <meta charset="UTF-8">
   <title>Chat Rooms</title>
   <script>
-    // ─── GitHub Pages SPA redirect trick ───
-    // GitHub Pages は存在しないパスに対して 404.html を返す
-    // ここで元のパスを保存して / にリダイレクトし、
-    // app.js 側で保存したパスを読み込んでルーティングする
+    // ─── GitHub Pages: /chat/<UUID>/ 用のフォールバック ───
+    // GitHub Pages は /chat/<UUID>/ のような動的パスの実ディレクトリを
+    // 事前に作れないため、存在しないパスはここに来る。
+    // /chat/ 配下のパスだけ、UUIDを保存して /chat/ (実ディレクトリ) に飛ばす。
+    // それ以外の不明なパスはルームトップへ。
     (function() {
       var path = window.location.pathname;
       var search = window.location.search;
 
-      // すでにルートなら何もしない
-      if (path === '/' || path === '/index.html') {
+      if (path.indexOf('/chat/') === 0) {
+        sessionStorage.setItem('chat-redirect', path + search);
+        window.location.replace('/chat/');
+      } else {
         window.location.replace('/');
-        return;
       }
-
-      // パスとクエリを保存
-      sessionStorage.setItem('spa-redirect', path + search);
-
-      // ルートにリダイレクト
-      window.location.replace('/' + (search || ''));
     })();
   </script>
 </head>
