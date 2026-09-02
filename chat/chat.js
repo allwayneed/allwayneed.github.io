@@ -1,6 +1,7 @@
 // ─── Chat page (スレッド内チャット) ───
 
 let currentRoom = null;
+let currentRoomGenre = null;
 let currentInviteCode = null;
 let pollTimer = null;
 
@@ -40,7 +41,7 @@ async function init() {
   if (!uuid) {
     document.getElementById("chat-title").textContent = "スレッドが見つかりません";
     document.getElementById("chat-messages").innerHTML =
-      '<p class="empty">UUIDが指定されていません。<a href="/">スレッド一覧へ</a></p>';
+      '<p class="empty">UUIDが指定されていません。<a href="/">板一覧へ</a></p>';
     return;
   }
 
@@ -61,16 +62,21 @@ async function openRoom(uuid, inviteCode) {
       document.getElementById("chat-title").textContent = "アクセスできません";
       document.getElementById("chat-messages").innerHTML = `
         <p class="empty">${escapeHtml(data.error || "エラーが発生しました")}<br>
-        <a href="/join/">招待コードで参加する</a> / <a href="/">スレッド一覧へ</a></p>
+        <a href="/join/">招待コードで参加する</a> / <a href="/">板一覧へ</a></p>
       `;
       return;
     }
 
     const room = data.room;
+    currentRoomGenre = room.genre || "general";
     document.getElementById("chat-title").textContent = room.name;
 
+    // 戻るボタンを板にリンク
+    const backLink = document.querySelector(".btn-back");
+    if (backLink) backLink.href = `/board/?genre=${encodeURIComponent(currentRoomGenre)}`;
+
     const metaParts = [
-      `<span class="tag">${escapeHtml(room.genre)}</span>`,
+      `<a href="/board/?genre=${encodeURIComponent(room.genre || 'general')}" class="tag">${escapeHtml(room.genre || 'general')}</a>`,
       ...(room.hashtags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`),
       room.visibility === "private"
         ? '<span style="color: var(--danger);">🔒 Private</span>'

@@ -14,7 +14,7 @@
     </div>
     <p class="tagline" id="tagline">読み込み中...</p>
     <nav>
-      <a href="/" class="nav-btn">スレッド一覧</a>
+      <a href="/" class="nav-btn">板一覧</a>
       <a href="/create/" class="nav-btn active">スレッド作成</a>
       <a href="/join/" class="nav-btn">招待コードで参加</a>
     </nav>
@@ -23,7 +23,7 @@
   <section class="page active">
     <div class="form-card">
       <h2>🧵 新規スレッド作成</h2>
-      <p class="hint">スレッドを作ると、その中でチャットができるようになります。スレッド → チャット。</p>
+      <p class="hint">スレッドを作ると、その中でチャットができるようになります。板 → スレッド → チャット。</p>
       <form id="create-form">
         <label>
           <span class="label-text">スレッド名 <small>(必須)</small></span>
@@ -31,16 +31,16 @@
         </label>
 
         <label>
-          <span class="label-text">ジャンル</span>
+          <span class="label-text">板 <small>(ジャンル)</small></span>
           <select id="room-genre">
-            <option value="general">general</option>
-            <option value="tech">tech</option>
-            <option value="game">game</option>
-            <option value="music">music</option>
-            <option value="art">art</option>
-            <option value="study">study</option>
-            <option value="hobby">hobby</option>
-            <option value="other">other</option>
+            <option value="general">💬 雑談 (general)</option>
+            <option value="tech">💻 テック (tech)</option>
+            <option value="game">🎮 ゲーム (game)</option>
+            <option value="music">🎵 音楽 (music)</option>
+            <option value="art">🎨 アート (art)</option>
+            <option value="study">📚 勉強 (study)</option>
+            <option value="hobby">🌿 趣味 (hobby)</option>
+            <option value="other">📦 その他 (other)</option>
           </select>
         </label>
 

@@ -566,3 +566,82 @@ footer .footer-meta {
   color: var(--primary);
   text-decoration: underline;
 }
+
+/* ─── Board grid ─── */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.board-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.board-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.board-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.board-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.board-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.board-key {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.board-latest {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.board-latest.empty-latest {
+  opacity: 0.5;
+}
+
+.board-count {
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+/* ─── Board header ─── */
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.board-header h2 {
+  margin: 0;
+}

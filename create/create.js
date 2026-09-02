@@ -1,5 +1,18 @@
 // ─── Create thread page (スレッド作成) ───
 
+// URLパラメータで板が指定されていれば事前選択
+const params = new URLSearchParams(window.location.search);
+const presetGenre = params.get("genre");
+if (presetGenre) {
+  const select = document.getElementById("room-genre");
+  for (const opt of select.options) {
+    if (opt.value === presetGenre) {
+      opt.selected = true;
+      break;
+    }
+  }
+}
+
 document.getElementById("create-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
