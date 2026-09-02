@@ -1,17 +1,4 @@
-// ─── Create thread page (スレッド作成) ───
-
-// URLパラメータで板が指定されていれば事前選択
-const params = new URLSearchParams(window.location.search);
-const presetGenre = params.get("genre");
-if (presetGenre) {
-  const select = document.getElementById("room-genre");
-  for (const opt of select.options) {
-    if (opt.value === presetGenre) {
-      opt.selected = true;
-      break;
-    }
-  }
-}
+// ─── Create chat page (チャット作成) ───
 
 document.getElementById("create-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -52,12 +39,12 @@ document.getElementById("create-form").addEventListener("submit", async (e) => {
         resultEl.classList.remove("hidden");
         const fullUrl = `${roomUrl}?code=${data.room.inviteCode}`;
         resultEl.innerHTML = `
-          <p>✅ スレッド「${escapeHtml(data.room.name)}」を作成しました！</p>
+          <p>✅ チャット「${escapeHtml(data.room.name)}」を作成しました！</p>
           <p class="hint">招待コード（参加者に共有してください）:</p>
           <div class="invite-code">${escapeHtml(data.room.inviteCode)}</div>
           <p class="hint" style="margin-top:12px;">3秒後にチャットへ移動します...</p>
         `;
-        submitBtn.textContent = "スレッドを立てる";
+        submitBtn.textContent = "チャットを作る";
         submitBtn.disabled = false;
         setTimeout(() => {
           window.location.href = fullUrl;
@@ -68,12 +55,12 @@ document.getElementById("create-form").addEventListener("submit", async (e) => {
     } else {
       alert(data.error || "作成に失敗しました");
       submitBtn.disabled = false;
-      submitBtn.textContent = "スレッドを立てる";
+      submitBtn.textContent = "チャットを作る";
     }
   } catch (err) {
     alert("エラー: " + err);
     submitBtn.disabled = false;
-    submitBtn.textContent = "スレッドを立てる";
+    submitBtn.textContent = "チャットを作る";
   }
 });
 

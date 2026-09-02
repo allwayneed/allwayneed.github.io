@@ -1,6 +1,18 @@
 // ─── Shared helpers for all pages ───
 const API_BASE = "https://my-api.allwayneed.workers.dev";
 
+// ジャンル表示名
+const GENRE_LABELS = {
+  general: "💬 雑談",
+  tech: "💻 テック",
+  game: "🎮 ゲーム",
+  music: "🎵 音楽",
+  art: "🎨 アート",
+  study: "📚 勉強",
+  hobby: "🌿 趣味",
+  other: "📦 その他",
+};
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -30,17 +42,17 @@ function messageCount(room) {
 // ─── 遊び心: ランダムタグライン ───
 const TAGLINES = [
   "匿名だから正直になれる場所",
-  "ログイン不要・BANなし・自己責任",
   "名前は適当でいい。中身で勝負。",
   "書きたいことを書け。それがルールだ。",
   "誰かが見てる。たぶん。",
   "匿名の住人たちが集う場所",
   "ここでの発言は現実には影響しません（たぶん）",
+  "チャットは文化。匿名は様式。",
 ];
 
 const WISDOMS = [
   "「匿名だからこそ、本音が出る」 — 名無しの住人",
-  "「スレッドは育つ。君の書き込みが肥料になる」",
+  "「チャットは育つ。君の書き込みが肥料になる」",
   "「ログインしない自由こそが真の自由」",
   "「誰も信用しない。だから誰も裏切らない」",
   "「BANがない世界は楽園か無法地帯か」 — 結論: 両方",

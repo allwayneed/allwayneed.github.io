@@ -3,35 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>スレッド作成 - 匿名スレッド</title>
+  <title>チャット作成 - 匿名チャット</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
   <header>
     <div class="header-row">
-      <h1>💬 匿名スレッド</h1>
+      <h1>💬 匿名チャット</h1>
     </div>
     <p class="tagline" id="tagline">読み込み中...</p>
     <nav>
-      <a href="/" class="nav-btn">板一覧</a>
-      <a href="/create/" class="nav-btn active">スレッド作成</a>
+      <a href="/" class="nav-btn">チャット一覧</a>
+      <a href="/create/" class="nav-btn active">チャット作成</a>
       <a href="/join/" class="nav-btn">招待コードで参加</a>
     </nav>
   </header>
 
   <section class="page active">
     <div class="form-card">
-      <h2>🧵 新規スレッド作成</h2>
-      <p class="hint">スレッドを作ると、その中でチャットができるようになります。板 → スレッド → チャット。</p>
+      <h2>🧵 新規チャット作成</h2>
+      <p class="hint">チャットを作ると、みんなで匿名で話せるようになる。</p>
       <form id="create-form">
         <label>
-          <span class="label-text">スレッド名 <small>(必須)</small></span>
+          <span class="label-text">チャット名 <small>(必須)</small></span>
           <input type="text" id="room-name" placeholder="例: プログラミング雑談" required>
         </label>
 
         <label>
-          <span class="label-text">板 <small>(ジャンル)</small></span>
+          <span class="label-text">ジャンル</span>
           <select id="room-genre">
             <option value="general">💬 雑談 (general)</option>
             <option value="tech">💻 テック (tech)</option>
@@ -51,15 +51,15 @@
 
         <label>
           <span class="label-text">概要</span>
-          <textarea id="room-description" placeholder="スレッドの説明を入力..." rows="3"></textarea>
+          <textarea id="room-description" placeholder="チャットの説明を入力..." rows="3"></textarea>
         </label>
 
         <label class="checkbox-label">
           <input type="checkbox" id="room-private">
-          <span>🔒 プライベートスレッド（招待コードが必要）</span>
+          <span>🔒 プライベートチャット（招待コードが必要）</span>
         </label>
 
-        <button type="submit" class="btn-primary" id="create-submit">スレッドを立てる</button>
+        <button type="submit" class="btn-primary" id="create-submit">チャットを作る</button>
       </form>
       <div id="create-result" class="result-box hidden"></div>
     </div>

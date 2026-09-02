@@ -3,26 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>匿名スレッド</title>
+  <title>匿名チャット</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
   <header>
     <div class="header-row">
-      <h1>💬 匿名スレッド</h1>
+      <h1>💬 匿名チャット</h1>
     </div>
     <p class="tagline" id="tagline">読み込み中...</p>
     <nav>
-      <a href="/" class="nav-btn active">板一覧</a>
-      <a href="/create/" class="nav-btn">スレッド作成</a>
+      <a href="/" class="nav-btn active">チャット一覧</a>
+      <a href="/create/" class="nav-btn">チャット作成</a>
       <a href="/join/" class="nav-btn">招待コードで参加</a>
     </nav>
   </header>
 
   <section class="page active">
-    <div id="board-list" class="board-grid">
-      <p class="loading">板を読み込み中...</p>
+    <div class="filters">
+      <input type="text" id="search-input" placeholder="🔍 チャット名・ハッシュタグで検索..." class="search-input">
+      <select id="genre-filter" class="genre-filter">
+        <option value="">すべてのジャンル</option>
+        <option value="general">💬 雑談</option>
+        <option value="tech">💻 テック</option>
+        <option value="game">🎮 ゲーム</option>
+        <option value="music">🎵 音楽</option>
+        <option value="art">🎨 アート</option>
+        <option value="study">📚 勉強</option>
+        <option value="hobby">🌿 趣味</option>
+        <option value="other">📦 その他</option>
+      </select>
+    </div>
+    <div id="room-list" class="room-list">
+      <p class="loading">チャットを読み込み中...</p>
     </div>
   </section>
 
