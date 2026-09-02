@@ -15,18 +15,19 @@ let pollTimer = null;
 function parseRoute() {
   // 404.html リダイレクトからのパスを確認
   let path = sessionStorage.getItem('spa-redirect');
+  let fromRedirect = false;
   if (path) {
     sessionStorage.removeItem('spa-redirect');
+    fromRedirect = true;
   } else {
     path = window.location.pathname + window.location.search;
   }
 
-  // クリーンナップ
   const cleanPath = path.split('?')[0].replace(/\/+/g, '/').replace(/\/$/, '');
   const search = path.includes('?') ? path.split('?')[1] : '';
   const params = new URLSearchParams(search);
 
-  return { path: cleanPath, params };
+  return { path: cleanPath, params, fromRedirect };
 }
 
 function getRouteInfo() {
@@ -52,23 +53,48 @@ function getRouteInfo() {
   return { page: 'home' };
 }
 
-function navigateTo(page, uuid = null, code = null) {
-  let url = '/';
-
+function buildUrl(page, uuid, code) {
   if (page === 'chat' && uuid) {
-    url = `/chat/${uuid}/`;
+    let url = `/chat/${uuid}/`;
     if (code) url += `?code=${encodeURIComponent(code)}`;
+    return url;
   } else if (page === 'create') {
-    url = '/create/';
+    return '/create/';
   } else if (page === 'join') {
-    url = '/join/';
+    return '/join/';
   }
+  return '/';
+}
 
+function navigateTo(page, uuid = null, code = null) {
+  const url = buildUrl(page, uuid, code);
   history.pushState({ page, uuid, code }, '', url);
 }
 
 function handleRoute() {
-  const route = getRouteInfo();
+  const { path, params, fromRedirect } = parseRoute();
+  const parts = path.split('/').filter(Boolean);
+
+  let route;
+  if (parts.length >= 2 && parts[0] === 'chat') {
+    route = { page: 'chat', uuid: parts[1], code: params.get('code') };
+  } else if (parts[0] === 'create') {
+    route = { page: 'create' };
+  } else if (parts[0] === 'join') {
+    route = { page: 'join' };
+  } else {
+    route = { page: 'home' };
+  }
+
+  // 404.html からリダイレクトされた場合、URLを正しいパスに復元
+  if (fromRedirect) {
+    const correctUrl = buildUrl(route.page, route.uuid, route.code);
+    history.replaceState(
+      { page: route.page, uuid: route.uuid, code: route.code },
+      '',
+      correctUrl
+    );
+  }
 
   if (route.page === 'chat' && route.uuid) {
     openRoom(route.uuid, route.code);
@@ -87,7 +113,7 @@ window.addEventListener('popstate', () => {
 const pages = ["home", "create", "join", "chat"];
 const navMap = { "nav-home": "home", "nav-create": "create", "nav-join": "join" };
 
-function showPage(pageName, pushState = true) {
+function showPage(pageName) {
   pages.forEach((p) => {
     document.getElementById(`page-${p}`).classList.toggle("active", p === pageName);
   });
@@ -103,7 +129,7 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
     if (!page) return;
     if (pollTimer) clearInterval(pollTimer);
     navigateTo(page);
-    showPage(page, false);
+    showPage(page);
   });
 });
 
@@ -149,9 +175,7 @@ async function loadRooms() {
         const visibilityBadge = room.visibility === "private"
           ? `<span class="room-genre private">🔒 Private</span>`
           : `<span class="room-genre">${escapeHtml(room.genre)}</span>`;
-        const link = room.visibility === "private"
-          ? `/chat/${room.uuid}/`
-          : `/chat/${room.uuid}/`;
+        const link = `/chat/${room.uuid}/`;
         return `
           <div class="room-card" data-uuid="${room.uuid}" data-visibility="${room.visibility}">
             <div class="room-name">${escapeHtml(room.name)}</div>
@@ -206,7 +230,7 @@ async function openRoom(uuid, inviteCode = null) {
 
     if (!res.ok) {
       alert(data.error || "ルームにアクセスできません");
-      showPage("home", false);
+      showPage("home");
       return;
     }
 
@@ -231,7 +255,7 @@ async function openRoom(uuid, inviteCode = null) {
     `;
 
     renderMessages(room.messages || []);
-    showPage("chat", false);
+    showPage("chat");
 
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(() => pollMessages(uuid, inviteCode), 5000);
